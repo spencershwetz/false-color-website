@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_tlA22Luk5tpPG5kcb6XlUSUBr2vn",
+  "orgId": "team_HeXfebhsMqyL7W3K0Xm21yP2",
+  "projectName": "falsecolorviewer.com",
+  "settings": {
+    "createdAt": 1778501478551,
+    "framework": null,
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "24.x"
+  }
+}
