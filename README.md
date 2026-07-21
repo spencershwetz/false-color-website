@@ -12,8 +12,7 @@ npm run dev
 ## Deployment
 
 This app is intended for Vercel with the project name `false-color-website`.
-The target production domain is `falsecolorviewer.com` once the domain is
-purchased and DNS is pointed at Vercel.
+The live primary domain is **falsecolorapp.com**.
 
 ## Analytics
 

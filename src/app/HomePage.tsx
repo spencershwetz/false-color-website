@@ -2,9 +2,14 @@ import Image from "next/image";
 import { AppStoreLink, MacAppStoreComingSoon } from "./AppStoreLink";
 import { ExposureModeDemo } from "./ExposureModeDemo";
 import { LanguageSelector } from "./LanguageSelector";
-import { getLocaleContent, seoDescription, textDirection } from "./localization";
+import {
+  getLocaleContent,
+  localeUrl,
+  seoDescription,
+  textDirection,
+} from "./localization";
 import { ReviewSessionReveal } from "./ReviewSessionReveal";
-import { appStoreUrl, siteUrl } from "./site";
+import { appIconPath, appStoreUrl, ogImagePath, siteUrl } from "./site";
 
 function Spectrum() {
   return (
@@ -17,20 +22,25 @@ function Spectrum() {
 export function HomePage({ locale = "en-US" }: { locale?: string }) {
   const content = getLocaleContent(locale);
   const localizedDescription = seoDescription(content);
+  const pageUrl = localeUrl(content.locale);
   const descriptionLines =
     content.descriptionLines.length > 0
       ? content.descriptionLines
       : [content.subtitle, content.promotionalText];
   const heroDescription = descriptionLines.slice(0, 2).join(" ");
-  const platformCards = ["iOS", "iPadOS", "macOS"].map((platform, index) => ({
-    platform,
-    body: descriptionLines[index % descriptionLines.length],
-  }));
-  const keywordList = [
+  const platformCards = [
+    { platform: "iOS", body: descriptionLines[0] ?? content.subtitle },
+    { platform: "iPadOS", body: descriptionLines[1] ?? content.subtitle },
+    {
+      platform: "macOS",
+      body: descriptionLines[2] ?? content.promotionalText,
+      comingSoon: true,
+    },
+  ];
+  const featureList = [
     ...content.keywords,
     "iOS",
     "iPadOS",
-    "macOS",
     "EL Zone",
     "ARRI",
     "Blackmagic",
@@ -42,16 +52,18 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
     "@type": "SoftwareApplication",
     name: content.name,
     applicationCategory: "PhotoApplication",
-    operatingSystem: "iOS, iPadOS, macOS",
-    url: siteUrl,
+    operatingSystem: "iOS, iPadOS",
+    url: pageUrl,
+    image: [`${siteUrl}${ogImagePath}`, `${siteUrl}${appIconPath}`],
     sameAs: [appStoreUrl],
     installUrl: appStoreUrl,
     description: localizedDescription,
-    featureList: keywordList,
+    featureList,
     offers: {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
     },
   };
 
@@ -68,7 +80,7 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
           <Image
             className="heroImage"
             src="/product/backlight-el-zone.jpg"
-            alt=""
+            alt={`${content.name} EL Zone false color exposure preview`}
             width={1920}
             height={800}
             priority
@@ -78,8 +90,8 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
           <nav className="topbar" aria-label={content.name}>
             <a className="brand" href="#top" aria-label={content.name}>
               <Image
-                src="/product/app-icon.png"
-                alt=""
+                src={appIconPath}
+                alt={`${content.name} app icon`}
                 width={42}
                 height={42}
                 priority
@@ -93,7 +105,8 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
               <p className="eyebrow">{content.subtitle}</p>
               <h1 id="hero-title">{content.name}</h1>
               <p className="heroLead">
-                {heroDescription} iOS, iPadOS, macOS.
+                {heroDescription} Available on iOS and iPadOS. macOS coming
+                soon.
               </p>
               <div className="heroActions" dir="ltr">
                 <AppStoreLink
@@ -102,13 +115,16 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
                   locale={content.locale}
                   location="hero"
                 />
-                <MacAppStoreComingSoon label={content.name} locale={content.locale} />
+                <MacAppStoreComingSoon
+                  label={content.name}
+                  locale={content.locale}
+                />
               </div>
             </div>
             <div className="meterPanel" aria-label={content.subtitle} dir="ltr">
               <Image
-                src="/product/app-icon.png"
-                alt=""
+                src={appIconPath}
+                alt={`${content.name} app icon`}
                 width={120}
                 height={120}
                 className="meterIcon"
@@ -143,14 +159,19 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
 
         <section className="section platformSection">
           <div className="sectionCopy">
-            <p className="sectionKicker">iOS · iPadOS · macOS</p>
+            <p className="sectionKicker">iOS · iPadOS · macOS soon</p>
             <h2>{content.subtitle}</h2>
             <p>{descriptionLines[0]}</p>
           </div>
           <div className="platformList">
             {platformCards.map((feature) => (
               <article className="platformItem" key={feature.platform}>
-                <h3>{feature.platform}</h3>
+                <h3>
+                  {feature.platform}
+                  {"comingSoon" in feature && feature.comingSoon
+                    ? " · Coming soon"
+                    : ""}
+                </h3>
                 <p>{feature.body}</p>
               </article>
             ))}
@@ -160,7 +181,7 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
         <section id="workflow" className="showcase">
           <Image
             src="/product/skin-tone.jpg"
-            alt={content.subtitle}
+            alt={`${content.name} skin-tone exposure reference before false color`}
             width={1920}
             height={800}
           />
@@ -180,16 +201,6 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
           <ReviewSessionReveal content={content} />
         </section>
 
-        <section className="section seoSection">
-          <p className="sectionKicker">{content.subtitle}</p>
-          <h2>{content.promotionalText}</h2>
-          <div className="keywordCloud" aria-label={content.subtitle}>
-            {keywordList.map((keyword) => (
-              <span key={keyword}>{keyword}</span>
-            ))}
-          </div>
-        </section>
-
         <section className="finalCta">
           <h2>{content.subtitle}</h2>
           <div className="finalActions" dir="ltr">
@@ -199,7 +210,10 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
               locale={content.locale}
               location="final-cta"
             />
-            <MacAppStoreComingSoon label={content.name} locale={content.locale} />
+            <MacAppStoreComingSoon
+              label={content.name}
+              locale={content.locale}
+            />
           </div>
         </section>
       </main>

@@ -1,3 +1,16 @@
 {
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run build",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.falsecolorapp.com"
+        }
+      ],
+      "destination": "https://falsecolorapp.com/:path*",
+      "permanent": true
+    }
+  ]
 }
