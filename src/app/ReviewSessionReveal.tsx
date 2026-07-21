@@ -49,10 +49,9 @@ export function ReviewSessionReveal({ content }: { content: LocaleContent }) {
             loading="lazy"
           />
           <Image
-            aria-hidden="true"
             className="revealOverlay"
             src={frame.falseColor}
-            alt=""
+            alt={`${content.name} EL Zone false color exposure overlay`}
             width={frame.width}
             height={frame.height}
             sizes="(max-width: 900px) 100vw, 50vw"

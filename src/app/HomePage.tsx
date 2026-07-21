@@ -21,6 +21,7 @@ function Spectrum() {
 
 export function HomePage({ locale = "en-US" }: { locale?: string }) {
   const content = getLocaleContent(locale);
+  const showEnglishFaq = content.locale.startsWith("en-");
   const localizedDescription = seoDescription(content);
   const pageUrl = localeUrl(content.locale);
   const descriptionLines =
@@ -66,6 +67,37 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
       availability: "https://schema.org/InStock",
     },
   };
+  const faqItems = [
+    {
+      question: "What is false color exposure?",
+      answer:
+        "False color replaces image brightness ranges with distinct colors so cinematographers can quickly judge shadows, midtones, skin tones, and highlights.",
+    },
+    {
+      question: "Which false color systems are included?",
+      answer:
+        "False Color Viewer includes EL Zone, ARRI, Blackmagic, and customizable exposure maps for comparing common on-set monitoring workflows.",
+    },
+    {
+      question: "Does False Color Viewer upload my footage?",
+      answer:
+        "No. Imported photos and videos are analyzed locally on your iPhone or iPad, so your media stays on your device.",
+    },
+    {
+      question: "Can I use it for both photos and video?",
+      answer:
+        "Yes. You can import photos or video clips and inspect exposure with the same false color tools on iOS and iPadOS.",
+    },
+  ];
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
 
   return (
     <>
@@ -73,6 +105,12 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
       />
+      {showEnglishFaq ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
 
       <main lang={content.locale} dir={textDirection(content.locale)}>
         <LanguageSelector currentLocale={content.locale} />
@@ -205,6 +243,27 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
           </div>
           <ReviewSessionReveal content={content} />
         </section>
+
+        {showEnglishFaq ? (
+        <section id="faq" className="section faqSection" aria-labelledby="faq-title">
+          <div className="sectionCopy">
+            <p className="sectionKicker">False color explained</p>
+            <h2 id="faq-title">Exposure questions, answered.</h2>
+            <p>
+              A quick guide to using False Color Viewer in a photo and video
+              exposure workflow.
+            </p>
+          </div>
+          <div className="faqList">
+            {faqItems.map((item) => (
+              <details key={item.question}>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+        ) : null}
 
         <section className="finalCta">
           <h2>{content.subtitle}</h2>
