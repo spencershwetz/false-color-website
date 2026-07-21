@@ -42,7 +42,7 @@ export function ReviewSessionReveal({ content }: { content: LocaleContent }) {
         >
           <Image
             src={frame.original}
-            alt={content.subtitle}
+            alt={`${content.name} original frame before EL Zone false color`}
             width={frame.width}
             height={frame.height}
           />

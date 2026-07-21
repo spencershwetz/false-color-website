@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Geist } from "next/font/google";
 import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { Analytics } from "./analytics";
-import { siteUrl } from "./site";
+import { defaultLocale, textDirection } from "./localization";
+import { ogImagePath, siteUrl } from "./site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,15 +12,16 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+const rootDescription =
+  "Import photos and videos on iOS and iPadOS to inspect exposure with local false color overlays—EL Zone, ARRI, Blackmagic, and custom maps.";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      "False Color Viewer | iOS, iPadOS, and macOS Exposure Maps",
+    default: "False Color Viewer | iOS & iPadOS Exposure Maps",
     template: "%s | False Color Viewer",
   },
-  description:
-    "Import photos and videos on iOS, iPadOS, and macOS to inspect exposure with local false color overlays, EL Zone, ARRI, Blackmagic, and custom exposure maps.",
+  description: rootDescription,
   applicationName: "False Color Viewer",
   category: "Photo & Video",
   keywords: [
@@ -31,8 +34,6 @@ export const metadata: Metadata = {
     "iOS exposure app",
     "iPadOS false color",
     "iPadOS exposure app",
-    "macOS false color",
-    "macOS exposure app",
     "video exposure",
     "photo exposure",
     "EL Zone",
@@ -44,17 +45,17 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
   openGraph: {
-    title: "False Color Viewer | iOS, iPadOS, and macOS Exposure Maps",
+    title: "False Color Viewer | iOS & iPadOS Exposure Maps",
     description:
-      "Check exposure locally with false color overlays for imported photos and videos on iOS, iPadOS, and macOS.",
+      "Check exposure locally with false color overlays for imported photos and videos on iOS and iPadOS.",
     url: siteUrl,
     siteName: "False Color Viewer",
     images: [
       {
-        url: "/product/backlight-el-zone.jpg",
-        width: 1920,
-        height: 800,
-        alt: "EL Zone false color exposure preview scene",
+        url: ogImagePath,
+        width: 1200,
+        height: 630,
+        alt: "False Color Viewer — local false color exposure maps for iOS and iPadOS",
       },
     ],
     locale: "en_US",
@@ -62,26 +63,35 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "False Color Viewer | iOS, iPadOS, and macOS Exposure Maps",
-  description:
-      "Import photos and videos on iOS, iPadOS, and macOS to inspect exposure with local false color overlays.",
-    images: ["/product/backlight-el-zone.jpg"],
+    title: "False Color Viewer | iOS & iPadOS Exposure Maps",
+    description:
+      "Import photos and videos on iOS and iPadOS to inspect exposure with local false color overlays.",
+    images: [ogImagePath],
   },
   appleWebApp: {
     title: "False Color Viewer",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
   other: {
     "apple-itunes-app": "app-id=6761836595",
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerStore = await headers();
+  const locale = headerStore.get("x-locale") ?? defaultLocale;
+  const dir =
+    headerStore.get("x-locale-dir") ?? textDirection(locale);
+
   return (
-    <html lang="en" className={geistSans.variable}>
+    <html lang={locale} dir={dir} className={geistSans.variable}>
       <body>
         {children}
         <VercelAnalytics />

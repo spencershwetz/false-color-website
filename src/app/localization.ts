@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { appStoreLocaleContent } from "./appStoreLocaleContent";
-import { siteUrl } from "./site";
+import { ogImagePath, siteUrl } from "./site";
 
 export type LocaleContent = {
   locale: (typeof supportedLocales)[number];
@@ -299,9 +299,27 @@ export function getLocaleContent(locale = defaultLocale): LocaleContent {
   };
 }
 
+const SEO_DESCRIPTION_MAX = 160;
+
 export function seoDescription(content: LocaleContent) {
-  const description = content.descriptionLines.slice(0, 3).join(" ");
-  return `${description} iOS, iPadOS, macOS, EL Zone, ARRI, Blackmagic, Custom.`;
+  // Prefer the first two App Store lines; they already read as a meta description.
+  const primary = content.descriptionLines.slice(0, 2).join(" ").trim();
+  let description =
+    primary ||
+    `${content.subtitle}. Local false color exposure maps for iOS and iPadOS.`;
+
+  const platformCue = " On iOS & iPadOS.";
+  if (description.length + platformCue.length <= SEO_DESCRIPTION_MAX) {
+    description += platformCue;
+  }
+
+  if (description.length > SEO_DESCRIPTION_MAX) {
+    const truncated = description.slice(0, SEO_DESCRIPTION_MAX - 1);
+    const lastSpace = truncated.lastIndexOf(" ");
+    description = `${truncated.slice(0, lastSpace > 80 ? lastSpace : truncated.length).trimEnd()}…`;
+  }
+
+  return description;
 }
 
 export function languageAlternates() {
@@ -330,7 +348,6 @@ export function localizedMetadata(locale = defaultLocale): Metadata {
       "false color app for iOS",
       "iOS false color",
       "iPadOS false color",
-      "macOS false color",
       "EL Zone",
       "ARRI false color",
       "Blackmagic false color",
@@ -349,10 +366,10 @@ export function localizedMetadata(locale = defaultLocale): Metadata {
       siteName: content.name,
       images: [
         {
-          url: "/product/backlight-el-zone.jpg",
-          width: 1920,
-          height: 800,
-          alt: content.subtitle,
+          url: ogImagePath,
+          width: 1200,
+          height: 630,
+          alt: `${content.name} — ${content.subtitle}`,
         },
       ],
       locale: content.locale.replace("-", "_"),
@@ -362,7 +379,7 @@ export function localizedMetadata(locale = defaultLocale): Metadata {
       card: "summary_large_image",
       title: `${content.name} | ${content.subtitle}`,
       description,
-      images: ["/product/backlight-el-zone.jpg"],
+      images: [ogImagePath],
     },
     other: {
       "apple-itunes-app": "app-id=6761836595",
