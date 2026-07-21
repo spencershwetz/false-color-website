@@ -83,6 +83,7 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
             alt={`${content.name} EL Zone false color exposure preview`}
             width={1920}
             height={800}
+            sizes="100vw"
             priority
           />
           <div className="heroShade" />
@@ -94,6 +95,7 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
                 alt={`${content.name} app icon`}
                 width={42}
                 height={42}
+                sizes="42px"
                 priority
               />
               <span>{content.name}</span>
@@ -128,6 +130,7 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
                 width={120}
                 height={120}
                 className="meterIcon"
+                sizes="120px"
                 priority
               />
               <p>IRE</p>
@@ -184,6 +187,8 @@ export function HomePage({ locale = "en-US" }: { locale?: string }) {
             alt={`${content.name} skin-tone exposure reference before false color`}
             width={1920}
             height={800}
+            sizes="100vw"
+            loading="lazy"
           />
           <div className="showcaseCopy">
             <p className="sectionKicker">{content.subtitle}</p>

@@ -100,7 +100,8 @@ export function ExposureModeDemo({ content }: { content: LocaleContent }) {
             alt={`${activeModeLabel} ${content.name}`}
             className="modeSourceImage"
             height={800}
-            priority
+            sizes="(max-width: 900px) 100vw, 60vw"
+            loading="lazy"
             src={activeMode.previewSrc}
             width={1920}
           />
