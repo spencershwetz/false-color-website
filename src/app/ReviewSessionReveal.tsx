@@ -8,8 +8,8 @@ const revealFrames = [
   {
     original: "/product/night.jpg",
     falseColor: "/product/night-el-zone.jpg",
-    width: 3840,
-    height: 1846,
+    width: 1920,
+    height: 923,
   },
   {
     original: "/product/runner.jpg",
@@ -45,6 +45,8 @@ export function ReviewSessionReveal({ content }: { content: LocaleContent }) {
             alt={`${content.name} original frame before EL Zone false color`}
             width={frame.width}
             height={frame.height}
+            sizes="(max-width: 900px) 100vw, 50vw"
+            loading="lazy"
           />
           <Image
             aria-hidden="true"
@@ -53,6 +55,8 @@ export function ReviewSessionReveal({ content }: { content: LocaleContent }) {
             alt=""
             width={frame.width}
             height={frame.height}
+            sizes="(max-width: 900px) 100vw, 50vw"
+            loading="lazy"
           />
           <span className="revealDivider" aria-hidden="true" />
           <span className="revealBadge">EL Zone</span>
